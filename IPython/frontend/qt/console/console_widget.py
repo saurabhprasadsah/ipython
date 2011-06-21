@@ -734,6 +734,7 @@ class ConsoleWidget(Configurable, QtGui.QWidget):
         """ Appends plain text at the end of the console buffer, processing
             ANSI codes if enabled.
         """
+        print(repr(text))
         cursor = self._get_end_cursor()
         self._insert_plain_text(cursor, text)
 
