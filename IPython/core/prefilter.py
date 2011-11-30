@@ -663,6 +663,9 @@ class AutocallChecker(PrefilterChecker):
         "Check if the initial word/function is callable and autocall is on."
         if not self.shell.autocall:
             return None
+        
+        if (self.shell.autocall < 2) and ("." in line_info.ifun):
+            return None
 
         oinfo = line_info.ofind(self.shell) # This can mutate state via getattr
         if not oinfo['found']:
