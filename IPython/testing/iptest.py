@@ -291,6 +291,7 @@ class IPTester(object):
         if '--with-xunit' in self.call_args:
             self.call_args.append('--xunit-file=%s' % path.abspath(sect+'.xunit.xml'))
         
+        print self.call_args
         if '--with-xml-coverage' in self.call_args:
             self.coverage_xml = path.abspath(sect+".coverage.xml")
             self.call_args.remove('--with-xml-coverage')
