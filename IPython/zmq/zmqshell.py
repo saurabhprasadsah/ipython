@@ -351,7 +351,7 @@ class KernelMagics(Magics):
         Files ending in .py are syntax-highlighted."""
         cont = open(arg_s).read()
         if arg_s.endswith('.py'):
-            cont = self.shell.pycolorize(cont)
+            cont = self.shell.pycolorize(io.source_to_unicode(cont))
         page.page(cont)
 
     more = line_magic('more')(less)
