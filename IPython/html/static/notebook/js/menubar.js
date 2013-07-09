@@ -19,7 +19,7 @@
 var IPython = (function (IPython) {
 
     /**
-     * A MenuBar Class to generate the menubar of IPython noteboko
+     * A MenuBar Class to generate the menubar of IPython notebook
      * @Class MenuBar
      *
      * @constructor
@@ -109,8 +109,8 @@ var IPython = (function (IPython) {
         this.element.find('#restore_checkpoint').click(function () {
         });
         this.element.find('#kill_and_exit').click(function () {
-            IPython.notebook.kernel.kill();
-            setTimeout(function(){window.close();}, 200);
+            IPython.notebook.session.delete_session();
+            setTimeout(function(){window.close();}, 500);
         });
         // Edit
         this.element.find('#cut_cell').click(function () {
