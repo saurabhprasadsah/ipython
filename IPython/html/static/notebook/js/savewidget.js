@@ -45,6 +45,10 @@ var IPython = (function (IPython) {
             that.update_notebook_name();
             that.update_document_title();
         });
+        $([IPython.events]).on('notebook_renamed.Notebook', function () {
+            that.update_notebook_name();
+            that.update_document_title();
+        });
         $([IPython.events]).on('notebook_save_failed.Notebook', function () {
             that.set_save_status('Autosave Failed!');
         });
@@ -89,8 +93,7 @@ var IPython = (function (IPython) {
                         );
                         return false;
                     } else {
-                        IPython.notebook.set_notebook_name(new_name);
-                        IPython.notebook.save_notebook();
+                        IPython.notebook.notebook_rename(new_name);
                     }
                 }}
                 },
@@ -111,6 +114,7 @@ var IPython = (function (IPython) {
 
     SaveWidget.prototype.update_notebook_name = function () {
         var nbname = IPython.notebook.get_notebook_name();
+        console.log("UPDATED")
         this.element.find('span#notebook_name').html(nbname);
     };
 
