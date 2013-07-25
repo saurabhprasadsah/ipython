@@ -76,6 +76,11 @@ var IPython = (function (IPython) {
         return this._baseProjectUrl || $('body').data('baseProjectUrl');
     };
 
+    Notebook.prototype.notebookName = function() {
+        var name = $('body').data('notebookName');
+        return name;  
+    };
+    
     Notebook.prototype.notebookPath = function() {
         var path = $('body').data('notebookPath');
         if (path != 'None') {

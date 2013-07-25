@@ -46,6 +46,8 @@ var IPython = (function (IPython) {
             that.update_document_title();
         });
         $([IPython.events]).on('notebook_renamed.Notebook', function () {
+            that.update_notebook_name();
+            that.update_document_title();
             that.update_address_bar();
         });
         $([IPython.events]).on('notebook_save_failed.Notebook', function () {
@@ -125,7 +127,8 @@ var IPython = (function (IPython) {
     SaveWidget.prototype.update_address_bar = function(){
         var nbname = IPython.notebook.notebook_name;
         var path = IPython.notebook.notebookPath();
-        window.location = path + nbname;
+        var state = {"path": path+nbname}
+        window.history.pushState(state, "", "/notebook/" + path+nbname);
     }
 
 
