@@ -42,6 +42,7 @@ from nose.core import TestProgram
 from nose.plugins import Plugin
 
 # Our own imports
+from IPython.utils.process import is_cmd_found
 from IPython.utils.importstring import import_item
 from IPython.testing.plugin.ipdoctest import IPythonDoctest
 from IPython.external.decorators import KnownFailure, knownfailureif
@@ -147,6 +148,7 @@ have['wx'] = test_for('wx')
 have['wx.aui'] = test_for('wx.aui')
 have['azure'] = test_for('azure')
 have['sphinx'] = test_for('sphinx')
+have['casperjs'] = is_cmd_found('casperjs')
 
 min_zmq = (2,1,11)
 
@@ -158,7 +160,7 @@ have['zmq'] = test_for('zmq.pyzmq_version_info', min_zmq, callback=lambda x: x()
 
 test_group_names = ['parallel', 'kernel', 'kernel.inprocess', 'config', 'core',
                     'extensions', 'lib', 'terminal', 'testing', 'utils',
-                    'nbformat', 'qt', 'html', 'nbconvert'
+                    'nbformat', 'qt', 'html', 'js', 'nbconvert'
                    ]
 
 class TestSection(object):
@@ -281,6 +283,9 @@ if not have['jinja2']:
     sec.exclude('notebookapp')
 if not have['azure']:
     sec.exclude('services.notebooks.azurenbmanager')
+
+sec = test_sections['js']
+sec.requires('zmq', 'tornado', 'jinja2', 'casperjs')
 
 # config:
 # Config files aren't really importable stand-alone
