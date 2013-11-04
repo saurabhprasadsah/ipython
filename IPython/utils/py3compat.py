@@ -237,6 +237,14 @@ else:
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+_NewBase_n = 0
 def with_metaclass(meta, *bases):
     """Create a base class with a metaclass."""
-    return meta("NewBase", bases, {})
+    global _NewBase_n
+    _NewBase_n += 1
+    name = 'NewBase' + str(_NewBase_n)
+    NewBase = meta(name, bases, {})
+    # We need this so it's possible to pickle it, for Sphinx autodoc
+    globals()[name] = NewBase
+    NewBase.__module__ = __name__
+    return NewBase
