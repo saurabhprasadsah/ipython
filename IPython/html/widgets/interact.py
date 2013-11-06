@@ -44,6 +44,12 @@ def _min_max_value(o):
 def _widget_abbrev(o):
     if isinstance(o, (str, unicode)):
         return StringWidget(value=unicode(o))
+    elif isinstance(o, dict):
+        values = map(unicode, o.keys())
+        actual_values = o.values()
+        w = SelectionWidget(value=values[0], values=values)
+        w.actual_values = o
+        return w
     elif isinstance(o, float):
         return FloatRangeWidget(value=o, min=-o, max=3.0*o)
     elif isinstance(o, int):
@@ -96,6 +102,8 @@ def interactive(f, **kwargs):
         actual_kwargs = {}
         for key, widget in widgets:
             value = widget.value
+            if hasattr(widget, 'actual_values'):
+                value = widget.actual_values[value]
             container.arguments[key] = value
             actual_kwargs[key] = value
         if co:
