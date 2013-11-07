@@ -17,6 +17,7 @@ from IPython.html.widgets import (init_widget_js, Widget, StringWidget,
     FloatRangeWidget, IntRangeWidget, BoolWidget, SelectionWidget,
     ContainerWidget)
 from IPython.display import display, clear_output
+from IPython.utils.py3compat import string_types, unicode_type
 
 #-----------------------------------------------------------------------------
 # Classes and Functions
@@ -30,7 +31,7 @@ def _matches(o, pattern):
     if not len(o) == len(pattern):
         return False
     comps = zip(o,pattern)
-    return all(map(lambda item: isinstance(item[0],item[1]), comps))
+    return all(isinstance(obj,kind) for obj,kind in comps)
 
 
 def _min_max_value(o):
@@ -42,11 +43,10 @@ def _min_max_value(o):
     return min, max, value
 
 def _widget_abbrev(o):
-    if isinstance(o, (str, unicode)):
-        return StringWidget(value=unicode(o))
+    if isinstance(o, string_types):
+        return StringWidget(value=unicode_type(o))
     elif isinstance(o, dict):
-        values = map(unicode, o.keys())
-        actual_values = o.values()
+        values = [unicode_type(k) for k in o]
         w = SelectionWidget(value=values[0], values=values)
         w.actual_values = o
         return w
@@ -60,10 +60,10 @@ def _widget_abbrev(o):
             return BoolWidget(value=o[0])
         elif _matches(o, (int, int)):
             min, max, value = _min_max_value(o)
-            return IntRangeWidget(value=value, min=min, max=max)
+            return IntRangeWidget(value=int(value), min=min, max=max)
         elif _matches(o, (int, int, int)):
             min, max, value = _min_max_value(o)
-            return IntRangeWidget(value=value, min=min, max=max, step=o[2])
+            return IntRangeWidget(value=int(value), min=min, max=max, step=o[2])
         elif _matches(o, (float, float)):
             min, max, value = _min_max_value(o)
             return FloatRangeWidget(value=value, min=min, max=max)
@@ -73,8 +73,9 @@ def _widget_abbrev(o):
         elif _matches(o, (float, float, int)):
             min, max, value = _min_max_value(o)
             return FloatRangeWidget(value=value, min=min, max=max, step=float(o[2]))
-        elif all(map(lambda x: isinstance(x, (str,unicode)), o)):
-            return SelectionWidget(value=unicode(o[0]), values=map(unicode,o))
+        elif all(isinstance(x, string_types) for x in o):
+            return SelectionWidget(value=unicode_type(o[0]),
+                                   values=[unicode_type(k) for k in o])
 
 
 def interactive(f, **kwargs):
@@ -95,7 +96,7 @@ def interactive(f, **kwargs):
                 raise ValueError("Object cannot be transformed to a Widget")
         widgets.append((key,widget))
         widget.parent = container
-    widgets = sorted(widgets, key=lambda e: e[1].__class__)
+    widgets.sort(key=lambda e: e[1].__class__.__name__)
  
     # Build the callback
     def call_f(name, old, new):
