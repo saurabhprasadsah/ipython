@@ -323,3 +323,8 @@ def test_pinfo_nonascii():
     from . import nonascii2
     ip.user_ns['nonascii2'] = nonascii2
     ip._inspect('pinfo', 'nonascii2', detail_level=1)
+
+def test_get_source():
+    ip.run_cell("class Foo: pass")
+    res = oinspect.getsource(ip.user_ns['Foo'])
+    nt.assert_in("class Foo:", res)
